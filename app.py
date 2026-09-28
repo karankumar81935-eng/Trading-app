@@ -4,21 +4,29 @@ import pandas as pd
 import yfinance as yf
 import pandas_ta as ta
 
-st.title("Live Crypto Dashboard with Signals")
+st.title("Live Crypto Dashboard with Signals & News")
 
 crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD'])
-data = yf.download(crypto, period='1mo', interval='1d')
+
+# Intraday data
+data = yf.download(crypto, period='1d', interval='5m')
 
 data['SMA_20'] = ta.sma(data['Close'], length=20)
 
-# Signal Logic
 data['Signal'] = 'Hold'
-valid_data = data.dropna()
-data.loc[valid_data[valid_data['Close'] > valid_data['SMA_20']].index, 'Signal'] = 'Buy'
-data.loc[valid_data[valid_data['Close'] < valid_data['SMA_20']].index, 'Signal'] = 'Sell'
+data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
+data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
 
 latest_signal = data['Signal'].iloc[-1]
 st.write(f"Latest Signal: {latest_signal}")
 
 st.line_chart(data[['Close', 'SMA_20']])
+
+# News Section
+st.subheader("Latest News")
+ticker = yf.Ticker(crypto)
+news = ticker.news
+for item in news[:5]:  # Fetch top 5 news
+    st.write(f"- {item['title']}")
+
 
