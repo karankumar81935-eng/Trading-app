@@ -13,8 +13,9 @@ data['SMA_20'] = ta.sma(data['Close'], length=20)
 
 # Signal Logic
 data['Signal'] = 'Hold'
-data.loc[data['Close'].values > data['SMA_20'].values, 'Signal'] = 'Buy'
-data.loc[data['Close'].values < data['SMA_20'].values, 'Signal'] = 'Sell'
+valid_data = data.dropna()
+data.loc[valid_data[valid_data['Close'] > valid_data['SMA_20']].index, 'Signal'] = 'Buy'
+data.loc[valid_data[valid_data['Close'] < valid_data['SMA_20']].index, 'Signal'] = 'Sell'
 
 latest_signal = data['Signal'].iloc[-1]
 st.write(f"Latest Signal: {latest_signal}")
