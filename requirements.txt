@@ -2,3 +2,4 @@ Streamlit
 textblob
 pandas
 GoogleNews 
+yfinance 
