@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 import yfinance as yf
@@ -12,10 +13,11 @@ data['SMA_20'] = ta.sma(data['Close'], length=20)
 
 # Signal Logic
 data['Signal'] = 'Hold'
-data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
-data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
+data.loc[data['Close'].values > data['SMA_20'].values, 'Signal'] = 'Buy'
+data.loc[data['Close'].values < data['SMA_20'].values, 'Signal'] = 'Sell'
 
 latest_signal = data['Signal'].iloc[-1]
 st.write(f"Latest Signal: {latest_signal}")
 
 st.line_chart(data[['Close', 'SMA_20']])
+
