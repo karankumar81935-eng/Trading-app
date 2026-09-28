@@ -12,8 +12,7 @@ data = yf.download(crypto, period='1mo', interval='1d')
 data['SMA_20'] = ta.sma(data['Close'], length=20)
 
 # Signal Logic
-data['Signal'] = 'Hold'
- data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
+data['Signal'] = 'Hold' data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
 data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'.
 
 data['Close'].values < data['SMA_20'].values
