@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import yfinance as yf
@@ -12,10 +11,9 @@ data = yf.download(crypto, period='1mo', interval='1d')
 data['SMA_20'] = ta.sma(data['Close'], length=20)
 
 # Signal Logic
-data['Signal'] = 'Hold' data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
-data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'.
-
-data['Close'].values < data['SMA_20'].values
+data['Signal'] = 'Hold'
+data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
+data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
 
 latest_signal = data['Signal'].iloc[-1]
 st.write(f"Latest Signal: {latest_signal}")
