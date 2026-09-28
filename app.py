@@ -1,15 +1,16 @@
- 
+
 import streamlit as st
 import pandas as pd
-import numpy as np
+import yfinance as yf
+import pandas_ta as ta
 
-st.title("Crypto Trading Dashboard")
-st.write("Real-time price & signals")
+st.title("Live Crypto Trading Dashboard")
 
-# Sample data for demonstration
-chart_data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=['BTC', 'ETH', 'SOL']
-)
-st.line_chart(chart_data)
+# Live Data Fetch
+crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD'])
+data = yf.download(crypto, period='1mo', interval='1d')
 
+# Simple Moving Average
+data['SMA_20'] = ta.sma(data['Close'], length=20)
+
+st.line_chart(data[['Close', 'SMA_20']])
