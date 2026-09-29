@@ -72,5 +72,4 @@ if api_key:
         st.error("Data not found.")
 else:
     st.error("No data available.")
-``` क्या आप अब इसे अपडेट करेंगे?
         
