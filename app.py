@@ -11,7 +11,7 @@ crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD', 'ADA-US
 data = yf.download(crypto, period='5d', interval='5m')
 
 if not data.empty:
-    data['SMA_20'] = ta.sma(data['Close'], length=20)
+    data['SMA_20'] = data['Close'].rolling(window=20).mean()
     data.dropna(subset=['SMA_20'], inplace=True)
 
     if not data.empty:
