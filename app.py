@@ -10,7 +10,7 @@ crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD'])
 
 # Intraday data
 data = yf.download(crypto, period='5d', interval='5m')
-st.write(data.columns).
+st.write(data.columns)
 data['SMA_20'] = ta.sma(data['Close'], length=20)
 data.dropna(inplace=True)
 data['Signal'] = 'Hold'
