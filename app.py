@@ -11,6 +11,7 @@ crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD', 'ADA-US
 data = yf.download(crypto, period='1mo', interval='5m')
 st.write(data.columns)
 if not data.empty:
+    st.write(data.columns.tolist())
     data.columns = data.columns.get_level_values(0)
     data['SMA_20'] = data['Close'].rolling(window=20).mean()
     data.dropna(subset=['SMA_20'], inplace=True)
