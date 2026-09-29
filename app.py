@@ -12,10 +12,10 @@ crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD'])
 data = yf.download(crypto, period='5d', interval='5m')
 
 data['SMA_20'] = ta.sma(data['Close'], length=20)
-
+data.dropna(inplace=True)
 data['Signal'] = 'Hold'
-data.loc[data['Close'].values > data['SMA_20'].values, 'Signal'] = 'Buy'
-data.loc[data['Close'].values < data['SMA_20'].values, 'Signal'] = 'Sell'
+data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
+data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
 
 latest_signal = data['Signal'].iloc[-1]
 st.write(f"Latest Signal: {latest_signal}")
@@ -28,7 +28,4 @@ ticker = yf.Ticker(crypto)
 news = ticker.news
 for item in news[:5]:
     st.write(f"- {item['title']}")
-
-
-
 
