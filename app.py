@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
+import numpy as np
 import plotly.graph_objects as go
 import google.generativeai as genai
 
