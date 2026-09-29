@@ -66,7 +66,7 @@ else:
     st.write("No Signal")
 
 
-        data.dropna(subset=[('SMA_20', '')], inplace=True)
+data.dropna(subset=[('SMA_20', '')], inplace=True)
 
         st.subheader("📊 Plotting Data")
         fig = go.Figure(data=[go.Candlestick(x=data.index,
