@@ -12,7 +12,7 @@ data = yf.download(crypto, period='5d', interval='5m')
 
 if not data.empty:
     data['SMA_20'] = ta.sma(data['Close'], length=20)
-    data.dropna(inplace=True)
+    data.dropna(subset=['SMA_20'], inplace=True)
 
     if not data.empty:
         data['Signal'] = 'Hold'
