@@ -9,7 +9,7 @@ st.title("Live Crypto Dashboard with Signals & News")
 crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD'])
 
 # Intraday data
-data = yf.download(crypto, period='1d', interval='5m')
+data = yf.download(crypto, period='5d', interval='5m')
 
 data['SMA_20'] = ta.sma(data['Close'], length=20)
 data.dropna(inplace=True)
