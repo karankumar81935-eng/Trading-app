@@ -59,11 +59,11 @@ data['Signal'] = np.where(data['SMA_20'] > data['SMA_50'], 1, 0)
 data['Position'] = data['Signal'].diff()
 latest_position = data['Position'].iloc[-1]
 if latest_position == 1:
-st.write("Buy Signal")
+    st.write("Buy Signal")
 elif latest_position == -1:
-st.write("Sell Signal")
+    st.write("Sell Signal")
 else:
-st.write("No Signal")
+    st.write("No Signal")
 
 
         data.dropna(subset=[('SMA_20', '')], inplace=True)
