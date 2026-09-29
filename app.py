@@ -9,7 +9,7 @@ st.title("Live Crypto Dashboard with Signals & News")
 crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD', 'ADA-USD', 'XRP-USD'])
 
 data = yf.download(crypto, period='5d', interval='5m')
-
+st.write(data.columns)
 if not data.empty:
     data['SMA_20'] = data['Close'].rolling(window=20).mean()
     data.dropna(subset=['SMA_20'], inplace=True)
