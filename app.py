@@ -2,56 +2,67 @@
 import streamlit as st
 import pandas as pd
 import yfinance as yf
-import pandas_ta as ta
 import plotly.graph_objects as go
 
-st.title("Live Crypto Dashboard with Signals & News")
-crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD', 'ADA-USD', 'XRP-USD'])
+st.title("Crypto Live Analysis Dashboard")
 
+crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD'])
+
+# Fetching Data
 data = yf.download(crypto, period='1mo', interval='5m')
-st.write(data.columns)
+
 if not data.empty:
-    st.write(data.columns.tolist())
-    data.columns = data.columns.get_level_values(0)
+    # Technical Analysis: 20-period Simple Moving Average
     data['SMA_20'] = data['Close'].rolling(window=20).mean()
     data.dropna(subset=['SMA_20'], inplace=True)
 
-    if not data.empty:
-        data['Signal'] = 'Hold'
-        data.loc[data['Close'].values > data['SMA_20'].values, 'Signal'] = 'Buy'
-        data.loc[data['Close'].values < data['SMA_20'].values, 'Signal'] = 'Sell'
+    # Signal Generation
+    data['Signal'] = 'Hold'
+    data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
+    data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
 
-        latest_signal = data['Signal'].iloc[-1]
-        st.write(f"Latest Signal: {latest_signal}")
+    latest_signal = data['Signal'].iloc[-1]
+    st.write(f"Latest Signal: {latest_signal}")
 
-        fig = go.Figure(data=[go.Candlestick(x=data.index,
-                        open=data['Open'],
-                        high=data['High'],
-                        low=data['Low'],
-                        close=data['Close'])])
+    # Plotting Data
+    fig = go.Figure(data=[go.Candlestick(x=data.index,
+                    open=data['Open'],
+                    high=data['High'],
+                    low=data['Low'],
+                    close=data['Close'])])
 
-        fig.add_trace(go.Scatter(x=data.index, y=data['SMA_20'], line=dict(color='orange', width=1.5), name='SMA 20'))
+    fig.add_trace(go.Scatter(x=data.index, y=data['SMA_20'], line=dict(color='orange', width=1.5), name='SMA 20'))
 
-        buy_signals = data[data['Signal'] == 'Buy']
-        sell_signals = data[data['Signal'] == 'Sell']
+    # Buy/Sell Markers
+    buy_signals = data[data['Signal'] == 'Buy']
+    sell_signals = data[data['Signal'] == 'Signal'] = 'Sell'
 
-        fig.add_trace(go.Scatter(x=buy_signals.index, y=buy_signals['Close'],
-                        mode='markers', marker=dict(color='green', size=10, symbol='triangle-up'),
-                        name='Buy Signal'))
+    latest_signal = data['Signal'].iloc[-1]
+    st.write(f"Latest Signal: {latest_signal}")
 
-        fig.add_trace(go.Scatter(x=sell_signals.index, y=sell_signals['Close'],
-                        mode='markers', marker=dict(color='red', size=10, symbol='triangle-down'),
-                        name='Sell Signal'))
+    # Plotting Data
+    fig = go.Figure(data=[go.Candlestick(x=data.index,
+                    open=data['Open'],
+                    high=data['High'],
+                    low=data['Low'],
+                    close=data['Close'])])
 
-        fig.update_layout(title=f'{crypto} Price Chart with SMA & Signals',
-                        xaxis_title='Date',
-                        yaxis_title='Price',
-                        xaxis_rangeslider_visible=False)
+    fig.add_trace(go.Scatter(x=data.index, y=data['SMA_20'], line=dict(color='orange', width=1.5), name='SMA 20'))
 
-        st.plotly_chart(fig)
-        st.subheader("Latest News")
-    else:
-        st.error("Data dropna ke baad empty ho gaya hai, indicators calculate nahi ho sakte.")
+    # Buy/Sell Markers
+    buy_signals = data[data['Signal'] == 'Buy']
+    sell_signals = data[data['Signal'] == 'Sell']
+
+    fig.add_trace(go.Scatter(x=buy_signals.index, y=buy_signals['Close'],
+                             mode='markers', marker=dict(color='green', size=8, symbol='triangle-up'),
+                             name='Buy Signal'))
+
+    fig.add_trace(go.Scatter(x=sell_signals.index, y=sell_signals['Close'],
+                             mode='markers', marker=dict(color='red', size=8, symbol='triangle-down'),
+                             name='Sell Signal'))
+
+    fig.update_layout(title=f'{crypto} Analysis with Buy/Sell Signals', xaxis_title='Date', yaxis_title='Price', xaxis_rangeslider_visible=False)
+
+    st.plotly_chart(fig)
 else:
-    st.error("No data found for the selected crypto.")
-
+    st.error("No data available.")
