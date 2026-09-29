@@ -8,8 +8,8 @@ st.set_page_config(layout="wide", page_title="AI Crypto Live Analysis Dashboard"
 st.title("💡 AI Crypto Live Analysis Dashboard")
 api_key = st.sidebar.text_input("Gemini API Key", type="password")
 if api_key:
-genai.configure(api_key=api_key)
-model = genai.GenerativeModel('models/gemini-3.8-flash')
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('models/gemini-3.8-flash')
 else:
 st.warning("Please enter your Gemini API Key in the sidebar.")
 crypto_options = ['BTC-USD', 'ETH-USD', 'SOL-USD']
