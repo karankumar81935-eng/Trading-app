@@ -14,8 +14,8 @@ data = yf.download(crypto, period='1d', interval='5m')
 data['SMA_20'] = ta.sma(data['Close'], length=20)
 data.dropna(inplace=True)
 data['Signal'] = 'Hold'
-data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
-data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
+data.loc[data['Close'].values > data['SMA_20'].values, 'Signal'] = 'Buy'
+data.loc[data['Close'].values < data['SMA_20'].values, 'Signal'] = 'Sell'
 
 latest_signal = data['Signal'].iloc[-1]
 st.write(f"Latest Signal: {latest_signal}")
@@ -26,7 +26,9 @@ st.line_chart(data[['Close', 'SMA_20']])
 st.subheader("Latest News")
 ticker = yf.Ticker(crypto)
 news = ticker.news
-for item in news[:5]:  # Fetch top 5 news
+for item in news[:5]:
     st.write(f"- {item['title']}")
+
+
 
 
