@@ -58,6 +58,7 @@ if api_key:
 
         # टेक्निकल इंडिकेटर्स
         data['SMA_20'] = data['Close'].rolling(window=20).mean()
+        st.write(data.head())
         data.dropna(subset=['SMA_20'], inplace=True)
 
         # प्लॉटिंग डेटा
