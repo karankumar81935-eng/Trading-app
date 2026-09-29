@@ -59,9 +59,10 @@ if api_key:
         # टेक्निकल इंडिकेटर्स
         data[('SMA_20', '')] = data['Close'].iloc[:, 0].rolling(window=20).mean()
     
-        st.write(data.head())
-        data.dropna(subset=['SMA_20'], inplace=True)
-        'st.write(data.columnd)'
+         data.dropna(subset=[('SMA_20', '')], inplace=True)
+        
+    
+        
 
         # प्लॉटिंग डेटा
         fig = go.Figure(data=[go.Candlestick(x=data.index,
