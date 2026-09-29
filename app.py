@@ -1,68 +1,80 @@
-
 import streamlit as st
 import pandas as pd
 import yfinance as yf
 import plotly.graph_objects as go
+import google.generativeai as genai
 
-st.title("Crypto Live Analysis Dashboard")
+# स्ट्रीमलिट पेज कॉन्फिगरेशन
+st.set_page_config(layout="wide", page_title="AI Crypto Agent")
 
-crypto = st.selectbox('Select Crypto', ['BTC-USD', 'ETH-USD', 'SOL-USD'])
+st.title("🚀 AI Crypto Live Analysis Dashboard")
 
-# Fetching Data
-data = yf.download(crypto, period='1mo', interval='5m')
+# जेमिनी API की कॉन्फ़िगरेशन
+api_key = st.sidebar.text_input("Gemini API Key", type="password")
 
-if not data.empty:
-    # Technical Analysis: 20-period Simple Moving Average
-    data['SMA_20'] = data['Close'].rolling(window=20).mean()
-    data.dropna(subset=['SMA_20'], inplace=True)
-
-    # Signal Generation
-    data['Signal'] = 'Hold'
-    data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
-    data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
-
-    latest_signal = data['Signal'].iloc[-1]
-    st.write(f"Latest Signal: {latest_signal}")
-
-    # Plotting Data
-    fig = go.Figure(data=[go.Candlestick(x=data.index,
-                    open=data['Open'],
-                    high=data['High'],
-                    low=data['Low'],
-                    close=data['Close'])])
-
-    fig.add_trace(go.Scatter(x=data.index, y=data['SMA_20'], line=dict(color='orange', width=1.5), name='SMA 20'))
-
-    # Buy/Sell Markers
-    buy_signals = data[data['Signal'] == 'Buy']
-    sell_signals = data[data['Signal'] == 'Signal'] = 'Sell'
-
-    latest_signal = data['Signal'].iloc[-1]
-    st.write(f"Latest Signal: {latest_signal}")
-
-    # Plotting Data
-    fig = go.Figure(data=[go.Candlestick(x=data.index,
-                    open=data['Open'],
-                    high=data['High'],
-                    low=data['Low'],
-                    close=data['Close'])])
-
-    fig.add_trace(go.Scatter(x=data.index, y=data['SMA_20'], line=dict(color='orange', width=1.5), name='SMA 20'))
-
-    # Buy/Sell Markers
-    buy_signals = data[data['Signal'] == 'Buy']
-    sell_signals = data[data['Signal'] == 'Sell']
-
-    fig.add_trace(go.Scatter(x=buy_signals.index, y=buy_signals['Close'],
-                             mode='markers', marker=dict(color='green', size=8, symbol='triangle-up'),
-                             name='Buy Signal'))
-
-    fig.add_trace(go.Scatter(x=sell_signals.index, y=sell_signals['Close'],
-                             mode='markers', marker=dict(color='red', size=8, symbol='triangle-down'),
-                             name='Sell Signal'))
-
-    fig.update_layout(title=f'{crypto} Analysis with Buy/Sell Signals', xaxis_title='Date', yaxis_title='Price', xaxis_rangeslider_visible=False)
-
-    st.plotly_chart(fig)
+if api_key:
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel('gemini-1.5-flash')
 else:
-    st.error("No data available.")
+    st.warning("कृपया साइडबार में अपनी Gemini API Key दर्ज करें।")
+
+crypto_options = ['BTC-USD', 'ETH-USD', 'SOL-USD']
+crypto = st.selectbox('Select Crypto', crypto_options)
+
+# डेटा फेचिंग फंक्शन
+@st.cache_data(ttl=300)
+def fetch_data(crypto_symbol):
+    data = yf.download(crypto_symbol, period='1mo', interval='5m')
+    return data
+
+if api_key:
+    data = fetch_data(crypto)
+
+    if not data.empty:
+        # डेटा को टेक्स्ट में बदलना ताकि AI समझ सके
+        data_summary = data[['Open', 'High', 'Low', 'Close', 'Volume']].tail(10).to_string()
+
+        # AI एनालिसिस
+        prompt = f"""
+        You are an expert crypto trading assistant. 
+        Analyze the recent price action of {crypto} based on the following 5-minute interval data:
+        
+        {data_summary}
+        
+        Provide a concise trading signal: 'Buy', 'Sell', or 'Hold'.
+        Give a brief reason for your decision.
+        """
+        
+        try:
+            response = model.generate_content(prompt)
+            ai_analysis = response.text
+        except Exception as e:
+            ai_analysis = f"Error generating analysis: {e}"
+
+        # सिग्नल डिस्प्ले
+        st.subheader("🤖 AI Agent Analysis")
+        st.write(ai_analysis)
+
+        # टेक्निकल इंडिकेटर्स
+        data['SMA_20'] = data['Close'].rolling(window=20).mean()
+        data.dropna(subset=['SMA_20'], inplace=True)
+
+        # प्लॉटिंग डेटा
+        fig = go.Figure(data=[go.Candlestick(x=data.index,
+                        open=data['Open'],
+                        high=data['High'],
+                        low=data['Low'],
+                        close=data['Close'],
+                        name='Market Data')])
+
+        fig.add_trace(go.Scatter(x=data.index, y=data['SMA_20'], line=dict(color='orange', width=1.5), name='SMA 20'))
+
+        fig.update_layout(title=f'{crypto} Live Price Chart with SMA',
+                          xaxis_title='Time',
+                          yaxis_title='Price (USD)',
+                          height=600)
+
+        st.plotly_chart(fig, use_container_width=True)
+    else:
+        st.error
+        
