@@ -16,8 +16,8 @@ if not data.empty:
     data.dropna(inplace=True)
 
     data['Signal'] = 'Hold'
-    data.loc[data['Close'] > data['SMA_20'], 'Signal'] = 'Buy'
-    data.loc[data['Close'] < data['SMA_20'], 'Signal'] = 'Sell'
+    data.loc[data['Close'].values > data['SMA_20'].values, 'Signal'] = 'Buy'
+    data.loc[data['Close'].values < data['SMA_20'].values, 'Signal'] = 'Sell'
 
     latest_signal = data['Signal'].iloc[-1]
     st.write(f"Latest Signal: {latest_signal}")
