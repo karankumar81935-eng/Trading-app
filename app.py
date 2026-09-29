@@ -60,6 +60,7 @@ if api_key:
         data['SMA_20'] = data['Close'].rolling(window=20).mean()
         st.write(data.head())
         data.dropna(subset=['SMA_20'], inplace=True)
+        'st.write(data.columnd)'
 
         # प्लॉटिंग डेटा
         fig = go.Figure(data=[go.Candlestick(x=data.index,
