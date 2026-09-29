@@ -14,7 +14,8 @@ api_key = st.sidebar.text_input("Gemini API Key", type="password")
 
 if api_key:
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel( 'gemini-1.5-pro'.)
+                                 
 else:
     st.warning("कृपया साइडबार में अपनी Gemini API Key दर्ज करें।")
 
