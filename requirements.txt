@@ -4,3 +4,4 @@ pandas-ta
 GoogleNews 
 yfinance 
 setuptools>=65.0.0
+plotly
