@@ -57,7 +57,8 @@ if api_key:
         st.write(ai_analysis)
 
         # टेक्निकल इंडिकेटर्स
-        data['SMA_20'] = data['Close'].iloc[:, 0].rolling(window=20).mean()
+        data[('SMA_20', '')] = data['Close'].iloc[:, 0].rolling(window=20).mean()
+    
         st.write(data.head())
         data.dropna(subset=['SMA_20'], inplace=True)
         'st.write(data.columnd)'
