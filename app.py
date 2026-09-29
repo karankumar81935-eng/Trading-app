@@ -60,11 +60,7 @@ if api_key:
         data[('SMA_20', '')] = data['Close'].iloc[:, 0].rolling(window=20).mean()
     
          data.dropna(subset=[('SMA_20', '')], inplace=True)
-        
-    
-        
-
-        # प्लॉटिंग डेटा
+                # प्लॉटिंग डेटा
         fig = go.Figure(data=[go.Candlestick(x=data.index,
                         open=data['Open'],
                         high=data['High'],
