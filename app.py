@@ -50,6 +50,21 @@ if api_key:
         st.subheader("📈 Technical Indicators")
         data[('SMA_20', '')] = data['Close'].iloc[:, 0].rolling(window=20).mean()
         st.write(data.head())
+        
+data['SMA_50'] = data['Close'].iloc[:, 0].rolling(window=50).mean()
+data.dropna(inplace=True)
+data['Signal'] = 0
+data['Signal'] = np.where(data['SMA_20'] > data['SMA_50'], 1, 0)
+data['Position'] = data['Signal'].diff()
+latest_position = data['Position'].iloc[-1]
+if latest_position == 1:
+st.write("Buy Signal")
+elif latest_position == -1:
+st.write("Sell Signal")
+else:
+st.write("No Signal")
+
+
         data.dropna(subset=[('SMA_20', '')], inplace=True)
 
         st.subheader("📊 Plotting Data")
