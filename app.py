@@ -76,9 +76,9 @@ fig = go.Figure(data=[go.Candlestick(x=data.index,
                                             close=data['Close'],
                                             name='Market Data')])
         
-        fig.add_trace(go.Scatter(x=data.index, y=data[('SMA_20', '')], line=dict(color='orange', width=2), name='SMA_20'))
+fig.add_trace(go.Scatter(x=data.index, y=data[('SMA_20', '')], line=dict(color='orange', width=2), name='SMA_20'))
         
-        fig.update_layout(title=f'{crypto} Live Price Chart with SMA_20',
+fig.update_layout(title=f'{crypto} Live Price Chart with SMA_20',
                           xaxis_title='Time',
                           yaxis_title='Price (USD)',
                           height=600)
