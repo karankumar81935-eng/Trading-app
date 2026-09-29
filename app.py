@@ -69,7 +69,7 @@ else:
 data.dropna(subset=[('SMA_20', '')], inplace=True)
 
 st.subheader("📊 Plotting Data")
-        fig = go.Figure(data=[go.Candlestick(x=data.index,
+fig = go.Figure(data=[go.Candlestick(x=data.index,
                                             open=data['Open'],
                                             high=data['High'],
                                             low=data['Low'],
