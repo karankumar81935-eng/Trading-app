@@ -10,8 +10,8 @@ api_key = st.sidebar.text_input("Gemini API Key", type="password")
 if api_key:
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('models/gemini-3.8-flash')
-else:
-st.warning("Please enter your Gemini API Key in the sidebar.")
+    else:
+    st.warning("Please enter your Gemini API Key in the sidebar.")
 crypto_options = ['BTC-USD', 'ETH-USD', 'SOL-USD']
 crypto = st.selectbox('Select Crypto', crypto_options)
 @st.cache_data(ttl=300)
